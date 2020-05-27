@@ -22,3 +22,7 @@ server:
 - appname: live
   live: true
   hls: true
+  # static_keys:
+  #   - channel: "test"
+  #     key: "123"
+

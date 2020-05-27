@@ -17,18 +17,27 @@ import (
     {
       "appname": "live",
       "live": true,
-	  "hls": true,
-	  "static_push": []
+      "hls": true,
+      "static_push": []
+      "static_keys": []
     }
   ]
 }
 */
 
+type StaticKey struct {
+	Channel string `mapstructure:"channel"`
+	Key     string `mapstructure:"key"`
+}
+
+type StaticKeys []StaticKey
+
 type Application struct {
-	Appname    string      `mapstructure:"appname"`
-	Live       bool        `mapstructure:"live"`
-	Hls        bool        `mapstructure:"hls"`
-	StaticPush []string    `mapstructure:"static_push"`
+	Appname    string   `mapstructure:"appname"`
+	Live       bool     `mapstructure:"live"`
+	Hls        bool     `mapstructure:"hls"`
+	StaticPush []string `mapstructure:"static_push"`
+	StaticKeys      StaticKeys  `mapstructure:"static_keys"`
 }
 
 type Applications []Application
@@ -74,9 +83,9 @@ var defaultConf = ServerCfg{
 		Live:       true,
 		Hls:        true,
 		StaticPush: nil,
+		StaticKeys: nil,
 	}},
 	ServeFLV:    false,
-	SaveStreams: false,
 }
 
 var Config = viper.New()
@@ -162,4 +171,17 @@ func GetStaticPushUrlList(appname string) ([]string, bool) {
 		}
 	}
 	return nil, false
+}
+
+func GetStaticKeys(appname string) (StaticKeys) {
+	apps := Applications{}
+	Config.UnmarshalKey("server", &apps)
+	for _, app := range apps {
+		if (app.Appname == appname) {
+			return app.StaticKeys
+		} else {
+			return nil
+		}
+	}
+	return nil
 }

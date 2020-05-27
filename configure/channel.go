@@ -22,6 +22,11 @@ var RoomKeys = &RoomKeysType{
 var saveInLocal = true
 
 func Init() {
+	for _, statics := range GetStaticKeys("live") {
+		RoomKeys.localCache.SetDefault(statics.Key, statics.Channel)
+		RoomKeys.localCache.SetDefault(statics.Channel, statics.Key)
+	}
+
 	saveInLocal = len(Config.GetString("redis_addr")) == 0
 	if saveInLocal {
 		return
