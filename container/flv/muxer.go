@@ -69,7 +69,7 @@ func NewFLVWriter(app, title, url string, ctx *os.File) *FLVWriter {
 		closed:  make(chan struct{}),
 		buf:     make([]byte, headerLen),
 	}
-	// header might be needed elsewhere, dunno
+
 	ret.ctx.Write(flvHeader)
 	pio.PutI32BE(ret.buf[:4], 0)
 	ret.ctx.Write(ret.buf[:4])
@@ -98,7 +98,7 @@ func (writer *FLVWriter) Write(p *av.Packet) error {
 	timestamp += writer.BaseTimeStamp()
 	writer.RWBaser.RecTimeStamp(timestamp, uint32(typeID))
 
-	// preDataLen := dataLen + headerLen
+	preDataLen := dataLen + headerLen
 	timestampbase := timestamp & 0xffffff
 	timestampExt := timestamp >> 24 & 0xff
 
@@ -106,19 +106,19 @@ func (writer *FLVWriter) Write(p *av.Packet) error {
 	pio.PutI24BE(h[1:4], int32(dataLen))
 	pio.PutI24BE(h[4:7], int32(timestampbase))
 	pio.PutU8(h[7:8], uint8(timestampExt))
-	// dont write to the flv
-	// if _, err := writer.ctx.Write(h); err != nil {
-	// 	return err
-	// }
 
-	// if _, err := writer.ctx.Write(p.Data); err != nil {
-	// 	return err
-	// }
+	if _, err := writer.ctx.Write(h); err != nil {
+		return err
+	}
 
-	// pio.PutI32BE(h[:4], int32(preDataLen))
-	// if _, err := writer.ctx.Write(h[:4]); err != nil {
-	// 	return err
-	// }
+	if _, err := writer.ctx.Write(p.Data); err != nil {
+		return err
+	}
+
+	pio.PutI32BE(h[:4], int32(preDataLen))
+	if _, err := writer.ctx.Write(h[:4]); err != nil {
+		return err
+	}
 
 	return nil
 }
