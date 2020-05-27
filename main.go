@@ -136,7 +136,10 @@ func main() {
 
 	stream := rtmp.NewRtmpStream()
 	hlsServer := startHls()
-	startHTTPFlv(stream)
+	ServeFLV := configure.Config.GetBool("serve_flv")
+	if ServeFLV {
+		startHTTPFlv(stream)
+	}
 	startAPI(stream)
 
 	startRtmp(stream, hlsServer)

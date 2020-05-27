@@ -143,8 +143,11 @@ func (s *Server) handleConn(conn *core.Conn) error {
 			writer := s.getter.GetWriter(reader.Info())
 			s.handler.HandleWriter(writer)
 		}
-		// flvWriter := new(flv.FlvDvr)
-		// s.handler.HandleWriter(flvWriter.GetWriter(reader.Info()))
+		saveStream := configure.Config.GetBool("save_streams")
+		if saveStream {
+			flvWriter := new(flv.FlvDvr)
+			s.handler.HandleWriter(flvWriter.GetWriter(reader.Info()))
+		}
 	} else {
 		writer := NewVirWriter(connServer)
 		log.Debugf("new player: %+v", writer.Info())

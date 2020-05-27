@@ -1,7 +1,9 @@
 # # Logger level
-# level: info
+level: info
 
 # # FLV Options
+# serve_flv: false
+# save_streams: false
 # flv_dir: "./tmp"
 # httpflv_addr: ":7001"
 
@@ -15,6 +17,7 @@
 
 # # API Options
 # api_addr: ":8090"
+
 server:
 - appname: live
   live: true

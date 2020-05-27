@@ -25,10 +25,10 @@ import (
 */
 
 type Application struct {
-	Appname    string   `mapstructure:"appname"`
-	Live       bool     `mapstructure:"live"`
-	Hls        bool     `mapstructure:"hls"`
-	StaticPush []string `mapstructure:"static_push"`
+	Appname    string      `mapstructure:"appname"`
+	Live       bool        `mapstructure:"live"`
+	Hls        bool        `mapstructure:"hls"`
+	StaticPush []string    `mapstructure:"static_push"`
 }
 
 type Applications []Application
@@ -37,11 +37,14 @@ type JWT struct {
 	Secret    string `mapstructure:"secret"`
 	Algorithm string `mapstructure:"algorithm"`
 }
+
 type ServerCfg struct {
 	Level           string       `mapstructure:"level"`
 	ConfigFile      string       `mapstructure:"config_file"`
+	SaveStreams     bool         `mapstructure:"save_streams"`
 	FLVDir          string       `mapstructure:"flv_dir"`
 	RTMPAddr        string       `mapstructure:"rtmp_addr"`
+	ServeFLV        bool         `mapstructure:"serve_flv"`
 	HTTPFLVAddr     string       `mapstructure:"httpflv_addr"`
 	HLSAddr         string       `mapstructure:"hls_addr"`
 	HLSKeepAfterEnd bool         `mapstructure:"hls_keep_after_end"`
@@ -72,6 +75,8 @@ var defaultConf = ServerCfg{
 		Hls:        true,
 		StaticPush: nil,
 	}},
+	ServeFLV:    false,
+	SaveStreams: false,
 }
 
 var Config = viper.New()
